@@ -23,5 +23,6 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
         modelBuilder.Entity<ProjectEntity>()
             .Property(p => p.Id)
             .UseIdentityColumn(100, 1);
+
     }
 }
