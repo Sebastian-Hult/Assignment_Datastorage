@@ -13,5 +13,5 @@ public class UnitEntity
     [Column(TypeName = "varchar(10)")]
     public string Unit { get; set; } = null!;
 
-    public ICollection<ServiceEntity> Services { get; set; } = [];
+    public virtual ICollection<ServiceEntity> Services { get; set; } = [];
 }

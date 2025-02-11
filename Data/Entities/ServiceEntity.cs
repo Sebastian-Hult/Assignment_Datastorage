@@ -25,5 +25,5 @@ public class ServiceEntity
     public CurrencyEntity Currency { get; set; } = null!;
 
 
-    public ICollection<ProjectEntity> Projects { get; set; } = [];
+    public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
 }

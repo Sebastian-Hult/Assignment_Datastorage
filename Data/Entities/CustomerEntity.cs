@@ -20,5 +20,5 @@ public class CustomerEntity
     [Column(TypeName = "varchar(20)")]
     public string? PhoneNumber { get; set; }
 
-    public ICollection<ProjectEntity> Projects { get; set; } = [];
+    public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
 }

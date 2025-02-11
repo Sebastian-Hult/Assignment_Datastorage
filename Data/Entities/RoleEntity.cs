@@ -13,5 +13,5 @@ public class RoleEntity
     [Column(TypeName = "nvarchar(50)")]
     public string RoleName { get; set; } = null!;
 
-    public ICollection<EmployeeEntity> Employees { get; set; } = [];
+    public virtual ICollection<EmployeeEntity> Employees { get; set; } = [];
 }

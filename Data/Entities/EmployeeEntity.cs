@@ -22,5 +22,5 @@ public class EmployeeEntity
     public RoleEntity Role { get; set; } = null!;
 
 
-    public ICollection<ProjectEntity> Projects { get; set; } = [];
+    public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
 }
