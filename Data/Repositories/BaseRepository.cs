@@ -51,7 +51,7 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
 
         try
         {
-            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression) ?? null!;
+            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression);
             if (existingEntity == null)
                 return null!;
 
@@ -73,7 +73,7 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
 
         try
         {
-            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression) ?? null!;
+            var existingEntity = await _dbSet.FirstOrDefaultAsync(expression);
             if (existingEntity == null)
                 return false;
 

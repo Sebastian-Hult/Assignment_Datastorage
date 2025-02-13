@@ -23,6 +23,10 @@ public class ProjectEntity
     [Column(TypeName = "date")]
     public DateTime EndDate { get; set; }
 
+    [Required]
+    [Column(TypeName = "18,2")]
+    public decimal TotalPrice { get; set; }
+
 
     public int StatusId { get; set; }
     public StatusTypeEntity Status { get; set; } = null!;
