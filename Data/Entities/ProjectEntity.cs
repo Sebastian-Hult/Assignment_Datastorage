@@ -24,7 +24,7 @@ public class ProjectEntity
     public DateTime EndDate { get; set; }
 
     [Required]
-    [Column(TypeName = "18,2")]
+    [Column(TypeName = "decimal(18,2)")]
     public decimal TotalPrice { get; set; }
 
 

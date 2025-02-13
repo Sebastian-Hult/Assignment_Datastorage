@@ -1,14 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Business.Models;
+namespace Business.Dtos;
 
-public class Customer
+public class CustomerRegistrationForm
 {
-    [Key]
-    [Required]
-    public int Id { get; set; }
-
     [Required]
     [Column(TypeName = "nvarchar(50)")]
     public string Name { get; set; } = null!;

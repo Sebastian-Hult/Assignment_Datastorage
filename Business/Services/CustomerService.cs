@@ -1,45 +1,50 @@
-﻿using Business.Factories;
+﻿using System.Linq.Expressions;
+using Business.Dtos;
+using Business.Factories;
+using Business.Interfaces;
 using Business.Models;
-using Data.Repositories;
+using Data.Entities;
+using Data.Interfaces;
 
 namespace Business.Services;
 
-public class CustomerService(CustomerRepository customerRepository)
+public class CustomerService(ICustomerRepository customerRepository) : ICustomerService
 {
-    private readonly CustomerRepository _customerRepository = customerRepository;
+    private readonly ICustomerRepository _customerRepository = customerRepository;
 
-    public async Task CreateCustomerAsync(CustomerRegistrationForm form)
+    public async Task<Customer> CreateCustomerAsync(CustomerRegistrationForm form)
     {
-        // expand with if-statement to cehck if customerr already exists, add try/catch
-        var customerEntity = CustomerFactory.Create(form);
-        await _customerRepository.AddAsync(customerEntity!);
+        // kollar om en entitet existerar eller inte
+        var entity = await _customerRepository.GetAsync(x => x.Name == form.Name);
+        entity ??= await _customerRepository.CreateAsync(CustomerFactory.Create(form));
+
+        return CustomerFactory.Create(entity);
     }
 
-    public async Task<IEnumerable<Customer?>> GetCustomersAsync()
+    public async Task<IEnumerable<Customer>> GetCustomersAsync()
     {
-        var customerEntities = await _customerRepository.GetAsync();
-        return customerEntities.Select(CustomerFactory.Create);
+        var entities = await _customerRepository.GetAsync();
+        var customers = entities.Select(CustomerFactory.Create);
+        return customers ?? [];
     }
 
-    public async Task<Customer?> GetCustomerByIdAsync(int id)
+    public async Task<Customer> GetCustomerAsync(Expression<Func<CustomerEntity, bool>> expression)
     {
-        var customerEntity = await _customerRepository.GetAsync(x => x.Id == id);
-        return CustomerFactory.Create(customerEntity!);
+        var entity = await _customerRepository.GetAsync(expression);
+        var customer = CustomerFactory.Create(entity);
+        return customer ?? null!;
     }
 
-    public async Task<Customer?> GetCustomerByEmailAsync(string email)
+    public async Task<Customer> UpdateCustomerAsync(CustomerUpdateForm form)
     {
-        var customerEntity = await _customerRepository.GetAsync(x => x.Email == email);
-        return CustomerFactory.Create(customerEntity!);
-    }
-
-    public async Task<bool> UpdateCustomerAsync(Customer customer)
-    {
-
+        var entity = await _customerRepository.UpdateAsync(x => x.Id == form.Id, CustomerFactory.Create(form));
+        var customer = CustomerFactory.Create(entity);
+        return customer ?? null!;
     }
 
     public async Task<bool> DeleteCustomerAsync(int id)
     {
-
+        var result = await _customerRepository.DeleteAsync(x => x.Id == id);
+        return result;
     }
 }
