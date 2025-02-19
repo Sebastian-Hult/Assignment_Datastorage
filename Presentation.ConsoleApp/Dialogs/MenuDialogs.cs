@@ -116,32 +116,38 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
     {
         Console.Clear();
 
+        Console.WriteLine("---------- CURRENT CREATED PROJECTS ----------");
+
         foreach (var project in await _projectService.GetProjectsAsync())
         {
-            Console.WriteLine("---------- CURRENT CREATED PROJECTS ----------");
-            Console.WriteLine();
             Console.WriteLine("------------------------------------------------");
-            Console.WriteLine($"Project Name: {project.ProjectName}");
+            Console.WriteLine($"Id: #{project.Id}   Project Name: {project.ProjectName}");
             Console.WriteLine("------------------------------------------------");
         }
 
-        var form = new ProjectRegistrationForm();
-        var result = await _projectService.GetProjectAsync(x => x.ProjectName == form.ProjectName);
+        Console.WriteLine("\nAbove is a list of all the created projects by their name and Id.");
+        Console.Write("Write down the name of the project you would like to view: ");
+        var projectName = Console.ReadLine()!.ToLower();
 
-        Console.WriteLine("Above is a list of all the created projects by their name. Write down the name of the project you would like to view: ");
-        result.ProjectName = Console.ReadLine()!;
+        var result = await _projectService.GetProjectAsync(x => x.ProjectName == projectName);
 
-        Console.WriteLine("Here is the information on the chosen project: ");
-        Console.WriteLine();
-        Console.WriteLine("------------------------------------------------");
-        Console.WriteLine($"Id: #{result.Id}");
-        Console.WriteLine($"Project Name: {result.ProjectName}");
-        Console.WriteLine($"Description: {result.Description}");
-        Console.WriteLine($"Start Date: {result.StartDate}");
-        Console.WriteLine($"End Date: {result.EndDate}");
-        Console.WriteLine($"Total Price: {result.TotalPrice}");
-        Console.WriteLine("------------------------------------------------");
-        Console.WriteLine();
+        if (result != null)
+        {
+            Console.Clear();
+            Console.WriteLine("Here is the information on the chosen project:\n");
+            Console.WriteLine("------------------------------------------------");
+            Console.WriteLine($"Id: #{result.Id}");
+            Console.WriteLine($"Project Name: {result.ProjectName}");
+            Console.WriteLine($"Description: {result.Description}");
+            Console.WriteLine($"Start Date: {result.StartDate:yyyy-MM-dd}");
+            Console.WriteLine($"End Date: {result.EndDate:yyyy-MM-dd}");
+            Console.WriteLine($"Total Price: {result.TotalPrice}");
+            Console.WriteLine("------------------------------------------------");
+        }
+        else
+        {
+            Console.WriteLine($"\nNo project with the name '{projectName}' was found. Please try again.");
+        }
 
         Console.WriteLine("Press any key to return to the Main Menu.");
         Console.ReadKey();
