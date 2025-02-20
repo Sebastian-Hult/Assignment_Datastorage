@@ -13,7 +13,8 @@ public static class EmployeeFactory
     public static EmployeeEntity Create(EmployeeRegistrationForm form) => new()
     {
         FirstName = form.FirstName,
-        LastName = form.LastName
+        LastName = form.LastName,
+        RoleId = form.RoleId
     };
 
     public static Employee Create(EmployeeEntity entity) => new()

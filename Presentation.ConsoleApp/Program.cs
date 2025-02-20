@@ -16,6 +16,8 @@ var services = new ServiceCollection()
     .AddScoped<IProjectService, ProjectService>()
     .AddScoped<IEmployeeService, EmployeeService>()
     .AddScoped<MenuDialogs>()
+    .AddScoped<CustomerDialogs>()
+    .AddScoped<EmployeeDialogs>()
     .BuildServiceProvider();
 
 var menuDialogs = services.GetRequiredService<MenuDialogs>();

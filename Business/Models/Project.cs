@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Data.Entities;
 
 namespace Business.Models;
 
@@ -26,4 +27,10 @@ public class Project
     [Required]
     [Column(TypeName = "decimal(18,2)")]
     public decimal TotalPrice { get; set; }
+
+    public int CustomerId { get; set; }
+    public int EmployeeId { get; set; }
+    public int StatusId { get; set; }
+    public StatusTypeEntity Status { get; set; } = null!;
+    public int ServiceId { get; set; }
 }

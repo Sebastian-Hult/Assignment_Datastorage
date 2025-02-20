@@ -15,6 +15,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository) : IEmployee
     public async Task<Employee> CreateEmployeeAsync(EmployeeRegistrationForm form)
     {
         var entity = await _employeeRepository.GetAsync(x => x.FirstName == form.FirstName);
+        // lägg till en ifsatts för att se vad som ska skickas tillbaka
         entity ??= await _employeeRepository.CreateAsync(EmployeeFactory.Create(form));
 
         return EmployeeFactory.Create(entity);

@@ -22,4 +22,9 @@ public class ProjectRegistrationForm
     [Required]
     [Column(TypeName = "decimal(18,2)")]
     public decimal TotalPrice { get; set; }
+
+    public int CustomerId { get; set; }
+    public int EmployeeId { get; set; }
+    public int StatusId { get; set; }
+    public int ServiceId { get; set; }
 }

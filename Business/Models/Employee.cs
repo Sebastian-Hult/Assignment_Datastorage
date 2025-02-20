@@ -16,4 +16,6 @@ public class Employee
     [Required]
     [Column(TypeName = "nvarchar(50)")]
     public string LastName { get; set; } = null!;
+
+    public int RoleId { get; set; }
 }

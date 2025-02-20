@@ -16,6 +16,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
     {
         // kollar om en entitet existerar eller inte
         var entity = await _customerRepository.GetAsync(x => x.Name == form.Name);
+        // lägg till ifsatts för att se vad som ska returneras
         entity ??= await _customerRepository.CreateAsync(CustomerFactory.Create(form));
 
         return CustomerFactory.Create(entity);

@@ -3,14 +3,17 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Business.Services;
+using Data.Interfaces;
+using Data.Repositories;
 
 namespace Presentation.ConsoleApp.Dialogs;
 
-public class MenuDialogs(ICustomerService customerService, IProjectService projectService, IEmployeeService employeeService)
+public class MenuDialogs(ICustomerService customerService, IProjectService projectService, IEmployeeService employeeService, IStatusTypeRepository statusTypeRepository)
 {
     private readonly ICustomerService _customerService = customerService;
     private readonly IProjectService _projectService = projectService;
     private readonly IEmployeeService _employeeService = employeeService;
+    private readonly IStatusTypeRepository _statusTypeRepository = statusTypeRepository;
 
     public async Task MenuOptions()
     {
@@ -58,6 +61,32 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
         var project = ProjectFactory.Create();
 
         Console.Clear();
+
+        var customerDialogs = new CustomerDialogs(_customerService);
+        var customer = await customerDialogs.CreateNewCustomer();
+
+        if (customer == null)
+        {
+            Console.WriteLine("Customer creation failed. Returning to the main menu.");
+            Console.ReadKey();
+            return;
+        }
+
+        project.CustomerId = customer.Id;
+
+        var employeeDialogs = new EmployeeDialogs(_employeeService);
+        var employee = await employeeDialogs.CreateNewEmployee();
+
+        if (employee == null)
+        {
+            Console.WriteLine("Employee creation failed. Returning to the main menu.");
+            Console.ReadKey();
+            return;
+        }
+
+        project.EmployeeId = employee.Id;
+
+        Console.Clear();
         Console.WriteLine("-------- CREATE NEW PROJECT --------");
         Console.WriteLine();
         Console.WriteLine("To create a new project you need to input the following project information: ");
@@ -75,11 +104,24 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
             project.EndDate = endDate;
         else
             Console.WriteLine("Invalid input, try again.");
-        Console.Write("Total Price: ");
+        Console.Write("Total Price (x,xx): ");
         if (decimal.TryParse(Console.ReadLine(), out decimal totalPrice))
             project.TotalPrice = totalPrice;
         else
             Console.WriteLine("Invalid input, try using two decimals.");
+
+        //var status = await _statusTypeRepository.GetAsync();
+        foreach (var status in await _statusTypeRepository.GetAsync())
+        {
+            Console.WriteLine($"Id: #{status.Id}");
+            Console.WriteLine($"Status: -{status.Status}-");
+        }
+        Console.WriteLine("Choose a status to put on your project by entering the corresponding Id: ");
+        if (int.TryParse(Console.ReadLine(), out int statusType))
+            project.StatusId = statusType;
+        else
+            Console.WriteLine("Invalid input, try using two decimals.");
+        // get på statusrepository, foreach för varje int id, koppla statusnamn till console.readline()
 
         var result = await _projectService.CreateProjectAsync(project);
         if (result != null)
@@ -105,6 +147,7 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
             Console.WriteLine($"Start Date: {project.StartDate}");
             Console.WriteLine($"End Date: {project.EndDate}");
             Console.WriteLine($"Total Price: {project.TotalPrice}");
+            Console.WriteLine($"Status: {project.Status.Status}");
             Console.WriteLine("------------------------------------------------");
         }
 

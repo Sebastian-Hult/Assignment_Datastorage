@@ -14,20 +14,24 @@ public class ProjectRepository(DataContext context) : BaseRepository<ProjectEnti
             .Include(x => x.Customer)
             .Include(x => x.Employee)
             .Include(x => x.Status)
+            .Include(x => x.Service)
             .ToListAsync();
 
         return entities;
     }
 
-    public override async Task<ProjectEntity> GetAsync(Expression<Func<ProjectEntity, bool>> expression)
+    public override async Task<ProjectEntity?> GetAsync(Expression<Func<ProjectEntity, bool>> expression)
     {
         if (expression == null)
             return null!;
 
-        return await _context.Projects
+        var entity = await _context.Projects
             .Include(x => x.Customer)
             .Include(x => x.Employee)
             .Include(x => x.Status)
-            .FirstOrDefaultAsync(expression) ?? null!;
+            .Include(x => x.Service)
+            .FirstOrDefaultAsync(expression);
+
+        return entity;
     }
 }

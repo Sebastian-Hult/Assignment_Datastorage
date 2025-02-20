@@ -35,7 +35,7 @@ public abstract class BaseRepository<TEntity>(DataContext context) : IBaseReposi
         return entities;
     }
 
-    public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression)
+    public virtual async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression)
     {
         if (expression == null)
             return null!;

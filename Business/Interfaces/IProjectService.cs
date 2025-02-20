@@ -11,5 +11,5 @@ public interface IProjectService
     Task<bool> DeleteProjectAsync(int id);
     Task<Project> GetProjectAsync(Expression<Func<ProjectEntity, bool>> expression);
     Task<IEnumerable<Project>> GetProjectsAsync();
-    Task<Project> UpdateProjectAsync(ProjectUpdateForm form);
+    Task<Project?> UpdateProjectAsync(int id, ProjectUpdateForm form);
 }

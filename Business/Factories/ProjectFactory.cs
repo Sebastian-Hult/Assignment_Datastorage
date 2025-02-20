@@ -16,7 +16,11 @@ public static class ProjectFactory
         Description = form.Description,
         StartDate = form.StartDate,
         EndDate = form.EndDate,
-        TotalPrice = form.TotalPrice
+        TotalPrice = form.TotalPrice,
+        CustomerId = form.CustomerId,
+        EmployeeId = form.EmployeeId,
+        StatusId = form.StatusId,
+        ServiceId = form.ServiceId
     };
 
     public static Project Create(ProjectEntity entity) => new()
@@ -26,7 +30,11 @@ public static class ProjectFactory
         Description = entity.Description,
         StartDate = entity.StartDate,
         EndDate = entity.EndDate,
-        TotalPrice = entity.TotalPrice
+        TotalPrice = entity.TotalPrice,
+        CustomerId = entity.CustomerId,
+        EmployeeId = entity.EmployeeId,
+        StatusId = entity.StatusId,
+        ServiceId = entity.ServiceId
     };
 
     public static ProjectEntity Create(ProjectUpdateForm form) => new()
@@ -36,6 +44,10 @@ public static class ProjectFactory
         Description = form.Description,
         StartDate = form.StartDate,
         EndDate = form.EndDate,
-        TotalPrice = form.TotalPrice
+        TotalPrice = form.TotalPrice,
+        CustomerId = form.CustomerId,
+        EmployeeId = form.EmployeeId,
+        StatusId = form.StatusId,
+        ServiceId = form.ServiceId
     };
 }
