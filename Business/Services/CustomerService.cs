@@ -16,8 +16,13 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
     {
         // kollar om en entitet existerar eller inte
         var entity = await _customerRepository.GetAsync(x => x.Name == form.Name);
-        // lägg till ifsatts för att se vad som ska returneras
-        entity ??= await _customerRepository.CreateAsync(CustomerFactory.Create(form));
+        if (entity != null)
+        {
+            Console.WriteLine("A customer with this name already exists.");
+            return CustomerFactory.Create(entity);
+        }
+
+        entity = await _customerRepository.CreateAsync(CustomerFactory.Create(form));
 
         return CustomerFactory.Create(entity);
     }
@@ -32,7 +37,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
     public async Task<Customer> GetCustomerAsync(Expression<Func<CustomerEntity, bool>> expression)
     {
         var entity = await _customerRepository.GetAsync(expression);
-        var customer = CustomerFactory.Create(entity);
+        var customer = CustomerFactory.Create(entity!);
         return customer ?? null!;
     }
 

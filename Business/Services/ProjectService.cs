@@ -15,7 +15,13 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
     public async Task<Project> CreateProjectAsync(ProjectRegistrationForm form)
     {
         var entity = await _projectRepository.GetAsync(x => x.ProjectName == form.ProjectName);
-        entity ??= await _projectRepository.CreateAsync(ProjectFactory.Create(form));
+        if (entity != null)
+        {
+            Console.WriteLine("A project with this name already exists.");
+            return ProjectFactory.Create(entity);
+        }
+
+        entity = await _projectRepository.CreateAsync(ProjectFactory.Create(form));
 
         return ProjectFactory.Create(entity);
     }
@@ -34,7 +40,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
         return project ?? null!;
     }
 
-    public async Task<Project?> UpdateProjectAsync(int id, ProjectUpdateForm form)
+    public async Task<Project?> UpdateProjectAsync(ProjectUpdateForm form)
     {
         //var existingProject = await GetProjectEntityAsync(x => x.Id == id);
         //if (existingProject == null)

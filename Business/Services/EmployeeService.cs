@@ -14,9 +14,14 @@ public class EmployeeService(IEmployeeRepository employeeRepository) : IEmployee
 
     public async Task<Employee> CreateEmployeeAsync(EmployeeRegistrationForm form)
     {
-        var entity = await _employeeRepository.GetAsync(x => x.FirstName == form.FirstName);
-        // lägg till en ifsatts för att se vad som ska skickas tillbaka
-        entity ??= await _employeeRepository.CreateAsync(EmployeeFactory.Create(form));
+        var entity = await _employeeRepository.GetAsync(x => x.FirstName == form.FirstName && x.LastName == form.LastName);
+        if (entity != null)
+        {
+            Console.WriteLine("An employee with this name already exists.");
+            return EmployeeFactory.Create(entity);
+        }
+
+        entity = await _employeeRepository.CreateAsync(EmployeeFactory.Create(form));
 
         return EmployeeFactory.Create(entity);
     }
@@ -31,7 +36,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository) : IEmployee
     public async Task<Employee> GetEmployeeAsync(Expression<Func<EmployeeEntity, bool>> expression)
     {
         var entity = await _employeeRepository.GetAsync(expression);
-        var employee = EmployeeFactory.Create(entity);
+        var employee = EmployeeFactory.Create(entity!);
         return employee ?? null!;
     }
 
