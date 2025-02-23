@@ -29,8 +29,11 @@ public class Project
     public decimal TotalPrice { get; set; }
 
     public int CustomerId { get; set; }
+    public CustomerEntity Customer { get; set; } = null!;
     public int EmployeeId { get; set; }
+    public EmployeeEntity Employee { get; set; } = null!;
     public int StatusId { get; set; }
     public StatusTypeEntity Status { get; set; } = null!;
     public int ServiceId { get; set; }
+    public ServiceEntity Service { get; set; } = null!;
 }

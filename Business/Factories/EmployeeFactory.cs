@@ -21,13 +21,15 @@ public static class EmployeeFactory
     {
         Id = entity.Id,
         FirstName = entity.FirstName,
-        LastName = entity.LastName
+        LastName = entity.LastName,
+        RoleId = entity.RoleId
     };
 
     public static EmployeeEntity Create(EmployeeUpdateForm form) => new()
     {
         Id = form.Id,
         FirstName = form.FirstName,
-        LastName = form.LastName
+        LastName = form.LastName,
+        RoleId = form.RoleId
     };
 }

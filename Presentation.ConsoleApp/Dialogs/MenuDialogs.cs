@@ -9,15 +9,13 @@ using Data.Repositories;
 
 namespace Presentation.ConsoleApp.Dialogs;
 
-public class MenuDialogs(ICustomerService customerService, IProjectService projectService, IEmployeeService employeeService, IStatusTypeRepository statusTypeRepository, IServiceRepository serviceRepository, ICurrencyRepository currencyRepository, IUnitRepository unitRepository)
+public class MenuDialogs(ICustomerService customerService, IProjectService projectService, IEmployeeService employeeService, IStatusTypeRepository statusTypeRepository, IServiceRepository serviceRepository)
 {
     private readonly ICustomerService _customerService = customerService;
     private readonly IProjectService _projectService = projectService;
     private readonly IEmployeeService _employeeService = employeeService;
     private readonly IStatusTypeRepository _statusTypeRepository = statusTypeRepository;
     private readonly IServiceRepository _serviceRepository = serviceRepository;
-    private readonly ICurrencyRepository _currencyRepository = currencyRepository;
-    private readonly IUnitRepository _unitRepository = unitRepository;
 
     public async Task MenuOptions()
     {
@@ -44,12 +42,12 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
                 case "3":
                     await ViewProject();
                     break;
-                //case "4":
-                //    UpdateProject();
-                //    break;
-                //case "5":
-                //    DeleteProject();
-                //    break;
+                case "4":
+                    await UpdateProject();
+                    break;
+                case "5":
+                    await DeleteProject();
+                    break;
                 case "q":
                     Environment.Exit(0);
                     break;
@@ -109,12 +107,12 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
         else
             Console.WriteLine("Invalid input, try again.");
 
+        Console.WriteLine();
         foreach (var status in await _statusTypeRepository.GetAsync())
         {
-            Console.WriteLine($"Id: #{status.Id}");
-            Console.WriteLine($"Status: -{status.Status}-");
+            Console.WriteLine($"Id: #{status.Id}, Status: -{status.Status}-");
         }
-        Console.WriteLine("Choose a status to put on your project by entering the corresponding Id: ");
+        Console.WriteLine("\nChoose a status to put on your project by entering the corresponding Id: ");
         if (int.TryParse(Console.ReadLine(), out int statusType))
             project.StatusId = statusType;
         else
@@ -132,7 +130,7 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
         Console.WriteLine("Available services: ");
         foreach (var service in services)
         {
-            Console.WriteLine($"{service.Id}. {service.ServiceName} - {service.Price} {service.Currency}/{service.Unit}");
+            Console.WriteLine($"{service.Id}. {service.ServiceName} - {service.Price} {service.Currency.Currency}/{service.Unit.Unit}");
         }
 
         Console.Write("Enter the Service Id to apply that service to your project: ");
@@ -158,30 +156,6 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
         else
             Console.WriteLine("Invalid input. Please enter a number.");
 
-            //var currencies = await _currencyRepository.GetAsync();
-            //Console.Write("Which currency do you want to use?");
-            //Console.WriteLine("Available currencies");
-            //foreach (var currency in currencies)
-            //    Console.WriteLine($"{currency.Id}. {currency.Currency}");
-
-            //Console.Write("Enter the Currency Id to apply that currency to your chosen service: ");
-            //if (int.TryParse(Console.ReadLine(), out int currencyId) && currencies.Any(x => x.Id == currencyId))
-            //    services.CurrencyId = currencyId;
-            //else
-            //    Console.WriteLine("Invalid input. Please try again");
-
-            //var units = await _unitRepository.GetAsync();
-            //Console.Write("Which unit do you want to use?");
-            //Console.WriteLine("Available units");
-            //foreach (var unit in units)
-            //    Console.WriteLine($"{unit.Id}. {unit.Unit}");
-
-            //Console.Write("Enter the Unit Id to apply that unit to your chosen service: ");
-            //if (int.TryParse(Console.ReadLine(), out int unitId) && units.Any(x => x.Id == unitId))
-            //    services.UnitId = unitId;
-            //else
-            //    Console.WriteLine("Invalid input. Please try again");
-
             var result = await _projectService.CreateProjectAsync(project);
         if (result != null)
             Console.WriteLine("Project was created successfully!");
@@ -203,13 +177,13 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
             Console.WriteLine($"Id: P-{project.Id}");
             Console.WriteLine($"Project Name: {project.ProjectName}");
             Console.WriteLine($"Description: {project.Description}");
-            Console.WriteLine($"Start Date: {project.StartDate}");
-            Console.WriteLine($"End Date: {project.EndDate}");
-            Console.WriteLine($"Project Manager: {project.EmployeeId}");
-            Console.WriteLine($"Customer: {project.CustomerId}");
-            Console.WriteLine($"Service: {project.ServiceId}");
+            Console.WriteLine($"Start Date: {project.StartDate.ToShortDateString()}");
+            Console.WriteLine($"End Date: {project.EndDate.ToShortDateString()}");
+            //Console.WriteLine($"Project Manager: {project.Employee.FirstName} {project.Employee.LastName}");
+            //Console.WriteLine($"Customer: {project.Customer.Name}");
+            //Console.WriteLine($"Service: {project.Service.ServiceName} - {project.Service.Price} {project.Service.Currency}/{project.Service.Unit}");
             Console.WriteLine($"Total Price: {project.TotalPrice}");
-            Console.WriteLine($"Status: {project.Status.Status}");
+            //Console.WriteLine($"Status: {project.Status.Status}");
             Console.WriteLine("------------------------------------------------");
         }
 
@@ -324,7 +298,7 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
         else
             updateForm.StartDate = selectedProject.StartDate;
 
-        Console.Write($"Current End Date: {selectedProject.EndDate}. Type in new end date (or press ENTER to leave field unchanged): ");
+        Console.Write($"Current End Date: {selectedProject.EndDate.ToShortDateString()}. Type in new end date (or press ENTER to leave field unchanged): ");
         var newEndDateInput = Console.ReadLine();
         if (DateTime.TryParse(newEndDateInput, out DateTime newEndDate))
             updateForm.EndDate = newEndDate;
@@ -350,11 +324,13 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
         await _projectService.UpdateProjectAsync(updateForm);
         Console.WriteLine("Project was updated successfully");
 
-        Console.WriteLine("\nPress Enter to return to the Main Menu or any key to stay in the Update menu.");
-        var userInput = Console.ReadKey();
-        if (userInput.Key == ConsoleKey.Enter)
-            return;
+        //Console.WriteLine("\nPress Enter to return to the Main Menu or any key to stay in the Update menu.");
+        //var userInput = Console.ReadKey();
+        //if (userInput.Key == ConsoleKey.Enter)
+        //    return;
 
+        Console.WriteLine("Press any key to return to the Main Menu.");
+        Console.ReadKey();
 
     }
 
@@ -399,21 +375,26 @@ public class MenuDialogs(ICustomerService customerService, IProjectService proje
         Console.WriteLine($"End Date: {selectedProject.EndDate.ToShortDateString()}");
         Console.WriteLine($"Total Price: {selectedProject.TotalPrice}");
 
-        Console.WriteLine("Would you like to delete this project? (y/n): ");
+        Console.WriteLine("\nWould you like to delete this project? (y/n): ");
 
         var userInput = Console.ReadKey();
         if (userInput.Key == ConsoleKey.Y)
         {
             await _projectService.DeleteProjectAsync(selectedProject.Id);
             Console.WriteLine("Project was deleted successfully.");
+            Console.ReadKey();
         }
         else
         {
             Console.WriteLine("Something went wrong... Try again later");
-            return;
+            Console.ReadKey();
         }
 
         if (userInput.Key == ConsoleKey.N)
-            return;
+        {
+            Console.WriteLine("Press any key to return to the Main Menu.");
+            Console.ReadKey();
+        }
+            
     }
 }
